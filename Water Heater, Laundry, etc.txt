@@ -1,0 +1,134 @@
+#include<LiquidCrystal.h>
+LiquidCrystal lcd(2,3,4,5,6,7);
+int val,heater,wake_rot=8,camera=9,sprin_spoil=10,laundry=11, heat=12;
+void setup() {
+  // put your setup code here, to run once:
+  lcd.begin(16,2);
+  Serial.begin(9600);
+  pinMode(wake_rot,OUTPUT);
+  pinMode(camera,OUTPUT);
+  pinMode(sprin_spoil,OUTPUT);
+  pinMode(laundry,OUTPUT);
+}
+void loop() {
+  // put your main code here, to run repeatedly:
+  while(Serial.available()==0);
+    val=Serial.read();
+    while(Serial.available()==0);
+    heater=Serial.read();
+    if(val=='w' && heater!='h')
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("ALARM 7AM");
+      digitalWrite(laundry,HIGH);
+      lcd.setCursor(0,0);
+      lcd.print("COFFEE MILK...");
+      delay(5000);
+    }
+    if(val=='w' && heater=='h')
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("ALARM 7AM");
+      digitalWrite(laundry,HIGH);
+      lcd.setCursor(0,0);
+      lcd.print("COFFEE MILK...");
+      delay(5000);
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Heater On");
+      digitalWrite(heat,HIGH);
+      delay(2000);
+      lcd.setCursor(0,1);
+      lcd.print("3/4 Water heated");
+      digitalWrite(heat,LOW);
+      lcd.print("Heater Off");
+      delay(2000);
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Tap On");
+      lcd.setCursor(0,1);
+      lcd.print("HeaterOn 1/4full");
+      digitalWrite(heat,HIGH);
+      delay(2000);
+      lcd.clear();lcd.setCursor(0,0);lcd.print("Rate decreased"); lcd.setCursor(0,1); lcd.print("Usage over");
+      digitalWrite(heat,LOW);delay(2000);
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Power in limit");
+      lcd.setCursor(0,1);
+      lcd.print("Credits +20");
+    }
+    if(val=='r')
+    {
+      digitalWrite(wake_rot,LOW);
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Fridge Monitor");
+      lcd.setCursor(0,1); lcd.print("Detect Rot");
+      digitalWrite(wake_rot,HIGH);
+      delay(2000);
+      lcd.clear();
+      digitalWrite(wake_rot,LOW);
+      lcd.setCursor(0,0);
+      lcd.print("Detect Wt.");
+      digitalWrite(wake_rot,HIGH);
+      delay(2000);
+      lcd.setCursor(0,1);
+      lcd.print("Wt.Low.CallStore");
+      delay(2000);
+      digitalWrite(wake_rot,LOW);
+    }
+    if(val=='l')
+    {
+      digitalWrite(laundry,LOW);
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("leave");
+      lcd.setCursor(0,1);
+      lcd.print("Doorlock");
+      digitalWrite(camera,HIGH);
+      delay(2000);
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Car Out");
+      lcd.setCursor(0,1);
+      lcd.print("Security High");
+    }
+     // pass=Serial.read();
+    if(val=='s')
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Sun Hgh");
+      lcd.setCursor(0,1);
+      lcd.print("Sprinkler");
+      digitalWrite(sprin_spoil,HIGH);
+      delay(2000);
+      digitalWrite(sprin_spoil,LOW);
+    }
+    if(val=='c')//clothes
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Laundry ON");
+      lcd.setCursor(0,1);
+      lcd.print("Detect weight");
+      delay(2000);
+      lcd.clear(); lcd.setCursor(0,0);
+      lcd.print("weight excess");
+      lcd.setCursor(0,1); lcd.print("Clothes Wash?");
+      delay(2000);
+      lcd.clear();
+      while(Serial.available()==0);
+      val=Serial.read();
+      if(val=='y'){
+      lcd.setCursor(0,0);lcd.print("Yes.");
+      lcd.setCursor(0,1);lcd.print("Washed. Dried");}
+      else{
+        lcd.setCursor(0,0);lcd.print("Snoozed");
+      lcd.setCursor(0,1);lcd.print("Washed Later");
+      }
+      }
+}
